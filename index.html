@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
+  <meta name="theme-color" content="#151515" />
+  <title>Urzędniczka 2.0 — Dżoanna kontra system</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="rotateHint">Obróć telefon poziomo ↻</div>
+
+  <main id="gameShell" aria-label="Urzędniczka 2.0">
+    <header class="hud">
+      <div class="brand"><span>URZĘDNICZKA 2.0</span><small>Dżoanna kontra system</small></div>
+      <div class="stat"><span>PUNKTY</span><strong id="score">0</strong></div>
+      <div class="stat barStat"><span>ENERGIA <b id="energyText">100%</b></span><div class="bar"><i id="energyBar"></i></div></div>
+      <div class="stat barStat"><span>STRES <b id="stressText">10%</b></span><div class="bar stress"><i id="stressBar"></i></div></div>
+      <div class="stat barStat"><span>PROMILE <b id="promileText">0%</b></span><div class="bar promile"><i id="promileBar"></i></div></div>
+      <div class="stat"><span>GODZINA</span><strong id="officeClock">07:30</strong></div>
+      <button id="musicBtn" class="hudBtn" title="Muzyka">♫</button>
+      <button id="pauseBtn" class="hudBtn" title="Pauza">Ⅱ</button>
+    </header>
+
+    <section class="workspace">
+      <aside class="tasksPanel">
+        <div class="panelTitle">DO ZROBIENIA <span id="queueCount">0/6</span></div>
+        <div id="tasksList" class="tasksList"></div>
+        <div class="panelTitle smallTitle">AKCJE DŻOANNY</div>
+        <div class="actionButtons">
+          <button id="wcBtn" class="actionBtn">IDĘ DO WC</button>
+          <button id="holidaysBtn" class="actionBtn">SZUKAM WAKACJI</button>
+          <button id="homeBtn" class="actionBtn danger">IDĘ DO DOMU</button>
+        </div>
+        <div class="tip">Klikaj przedmioty lub używaj przycisków. Zadania mają czas, a Dżoanna szuka każdej okazji, żeby nie pracować.</div>
+      </aside>
+
+      <section id="office" class="office">
+        <div class="wallTexture"></div>
+        <div class="emblem" title="Urząd KAC"><div class="eagle">🦅</div><small>RZECZPOSPOLITA<br>POLSKA</small></div>
+        <div class="officeName">K A C<br><span>Krajowa Administracja Czegośtam</span></div>
+        <button id="clockObj" class="gameObject clockObj" data-target="clock" aria-label="Zegar"><span id="wallClock">07:30</span></button>
+
+        <div id="speech" class="speech hidden"></div>
+        <div id="eventBanner" class="eventBanner hidden"></div>
+
+        <button id="windowObj" class="gameObject window" data-target="window" aria-label="Okno">
+          <div class="sky"></div><div class="cloud c1"></div><div class="cloud c2"></div><div class="frameV"></div><div class="frameH"></div>
+          <div class="windowLabel">WAKACJE?</div>
+        </button>
+
+        <button id="doorObj" class="gameObject door" data-target="door" aria-label="Drzwi">
+          <span class="doorSign">KORYTARZ</span><span class="handle"></span>
+        </button>
+
+        <button id="cabinetObj" class="gameObject cabinet" data-target="cabinet" aria-label="Szafka">
+          <span>SZAFKA</span><i></i><i></i>
+        </button>
+
+        <button id="binObj" class="gameObject bin" data-target="bin" aria-label="Kosz"><span>🗑</span></button>
+
+        <div class="desk">
+          <button id="docsObj" class="gameObject docs" data-target="docs" aria-label="Dokumenty"><span>WNIOSEK</span><span>DECYZJA</span><span>PISMO</span></button>
+          <button id="computerObj" class="gameObject computer" data-target="computer" aria-label="Komputer"><span class="screen"><b>eURZĄD</b><small id="screenText">42 nieprzeczytane</small></span><span class="stand"></span></button>
+          <button id="printerObj" class="gameObject printer" data-target="printer" aria-label="Drukarka i skaner"><span class="paper"></span><span class="scannerLight"></span><b>DRUK / SKAN</b></button>
+          <button id="phoneObj" class="gameObject phone" data-target="phone" aria-label="Telefon">☎</button>
+          <button id="coffeeObj" class="gameObject coffee" data-target="coffee" aria-label="Kawa"><span>☕</span><small>KAWA</small></button>
+          <button id="stampObj" class="gameObject stamp" data-target="stamp" aria-label="Pieczątka">PIECZĄTKA</button>
+          <button id="plannerObj" class="gameObject planner" data-target="planner" aria-label="Kalendarz">PLANER</button>
+        </div>
+
+        <div id="dzoanna" class="dzoanna" aria-label="Dżoanna">
+          <div class="hair back"></div>
+          <div class="head"><div class="hair fringe"></div><span class="eye e1"></span><span class="eye e2"></span><span class="nose"></span><span class="mouth"></span></div>
+          <div class="body"><span class="badge">DŻOANNA<br><small>REFERENT</small></span></div>
+          <div class="arm armL"></div><div class="arm armR"></div>
+          <div class="prop" id="dzoProp">&nbsp;</div>
+          <div class="chair"></div>
+        </div>
+
+        <div id="visitor" class="visitor hidden"><div class="visitorHead"><span class="eye e1"></span><span class="eye e2"></span><span class="mouth"></span></div><div class="visitorBody"></div><strong id="visitorLabel">KIEROWNICZKA</strong></div>
+        <div class="floor"></div>
+      </section>
+    </section>
+
+    <footer class="bottomBar">
+      <div id="statusText">Gotowa do pracy… mniej więcej.</div>
+      <button id="helpBtn">?</button>
+    </footer>
+  </main>
+
+  <div id="startScreen" class="overlay show">
+    <div class="card introCard">
+      <div class="stampTitle">KAC</div>
+      <h1>URZĘDNICZKA 2.0</h1>
+      <h2>Dżoanna kontra system</h2>
+      <p>Przetrwaj zmianę od 7:30 do 15:00. Rób zadania, pilnuj energii i nie pozwól, żeby Dżoanna odpłynęła na wakacje, do WC, do domu albo do szafki po mocniejszą regenerację.</p>
+      <div class="rules"><span>✓ zadania = punkty</span><span>☕ kawa = energia, ale minus punkty</span><span>🍺 / 🍸 szafka = regeneracja i chaos</span><span>⚠ 6 zadań w kolejce albo za duże zmęczenie = L4</span></div>
+      <button id="startBtn" class="primary">ROZPOCZNIJ ZMIANĘ</button>
+      <div class="record">Rekord: <b id="recordStart">0</b> pkt</div>
+    </div>
+  </div>
+
+  <div id="modal" class="overlay">
+    <div class="card modalCard">
+      <h2 id="modalTitle">Dżoanna</h2>
+      <p id="modalText"></p>
+      <div id="modalButtons" class="modalButtons"></div>
+    </div>
+  </div>
+
+  <div id="endScreen" class="overlay">
+    <div class="card endCard">
+      <h1 id="endTitle">KONIEC ZMIANY</h1>
+      <p id="endQuote"></p>
+      <div class="bigScore"><small>WYNIK</small><strong id="finalScore">0</strong></div>
+      <div id="summary" class="summary"></div>
+      <div id="rank" class="rank"></div>
+      <button id="restartBtn" class="primary">JESZCZE JEDNA ZMIANA</button>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
