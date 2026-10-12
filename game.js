@@ -5,25 +5,32 @@
   const ui = {
     score: $('score'), energyText: $('energyText'), energyBar: $('energyBar'), stressText: $('stressText'), stressBar: $('stressBar'),
     promileText: $('promileText'), promileBar: $('promileBar'), officeClock: $('officeClock'), wallClock: $('wallClock'),
-    tasksList: $('tasksList'), queueCount: $('queueCount'), statusText: $('statusText'), speech: $('speech'), eventBanner: $('eventBanner'),
+    tasksList: $('tasksList'), queueCount: $('queueCount'), statusText: $('statusText'), speech: $('speech'), eventBanner: $('eventBanner'), currentTask: $('currentTask'),
+    activeTaskBox: $('activeTaskBox'), activeTaskText: $('activeTaskText'), activeTaskTime: $('activeTaskTime'), activeTaskPoints: $('activeTaskPoints'), activeTaskTimerBar: $('activeTaskTimerBar'),
+    scorePop: $('scorePop'), resultPop: $('resultPop'), thief: $('thiefObj'),
     dzoanna: $('dzoanna'), dzoProp: $('dzoProp'), visitor: $('visitor'), visitorLabel: $('visitorLabel'), screenText: $('screenText'),
     start: $('startScreen'), modal: $('modal'), end: $('endScreen'), recordStart: $('recordStart'), finalScore: $('finalScore'), summary: $('summary'),
     rank: $('rank'), endTitle: $('endTitle'), endQuote: $('endQuote'), pauseBtn: $('pauseBtn'), musicBtn: $('musicBtn')
   };
 
   const taskDefs = [
-    {text:'Zeskanuj dokumenty', target:'printer', pts:90, energy:4, stress:3, time:11, hint:'Kliknij drukarkę/skaner'},
-    {text:'Wydrukuj decyzję', target:'printer', pts:95, energy:4, stress:4, time:10, hint:'Drukarka czeka'},
-    {text:'Sprawdź maila', target:'computer', pts:80, energy:3, stress:3, time:11, hint:'Kliknij komputer'},
-    {text:'Wyślij maila do interesanta', target:'computer', pts:105, energy:4, stress:4, time:10, hint:'Komputer → eURZĄD'},
-    {text:'Wyrzuć śmieci', target:'bin', pts:70, energy:2, stress:1, time:9, hint:'Kliknij kosz'},
-    {text:'Popraw godzinę na zegarze', target:'clock', pts:75, energy:2, stress:2, time:10, hint:'Kliknij zegar'},
-    {text:'Podpisz dokumenty', target:'docs', pts:95, energy:5, stress:4, time:10, hint:'Sterta dokumentów na biurku'},
-    {text:'Odbierz telefon', target:'phone', pts:100, energy:4, stress:5, time:9, hint:'Telefon dzwoni'},
-    {text:'Znajdź segregator', target:'cabinet', pts:90, energy:3, stress:2, time:11, hint:'Kliknij szafkę'},
-    {text:'Podbij pieczątkę', target:'stamp', pts:95, energy:3, stress:2, time:10, hint:'Kliknij pieczątkę'},
-    {text:'Sprawdź planer urlopowy', target:'planner', pts:85, energy:3, stress:2, time:11, hint:'Kliknij planer'},
-    {text:'Sprawdź pogodę za oknem', target:'window', pts:70, energy:1, stress:-3, time:12, hint:'Kliknij okno'}
+    {text:'Zeskanuj dokumenty', target:'printer', pts:90, energy:4, stress:3, time:14, hint:'Kliknij drukarkę/skaner'},
+    {text:'Wydrukuj decyzję', target:'printer', pts:95, energy:4, stress:4, time:13, hint:'Drukarka czeka'},
+    {text:'Sprawdź maila', target:'computer', pts:80, energy:3, stress:3, time:14, hint:'Kliknij komputer'},
+    {text:'Wyślij maila do interesanta', target:'computer', pts:105, energy:4, stress:4, time:13, hint:'Komputer → eURZĄD'},
+    {text:'Wyrzuć śmieci', target:'bin', pts:70, energy:2, stress:1, time:15, hint:'Kliknij kosz'},
+    {text:'Popraw godzinę na zegarze', target:'clock', pts:75, energy:2, stress:2, time:13, hint:'Kliknij zegar'},
+    {text:'Podpisz dokumenty', target:'docs', pts:95, energy:5, stress:4, time:13, hint:'Sterta dokumentów na biurku'},
+    {text:'Odbierz telefon', target:'phone', pts:100, energy:4, stress:5, time:15, hint:'Telefon dzwoni'},
+    {text:'Znajdź segregator', target:'cabinet', pts:90, energy:3, stress:2, time:14, hint:'Kliknij szafkę'},
+    {text:'Podbij pieczątkę', target:'stamp', pts:95, energy:3, stress:2, time:13, hint:'Kliknij pieczątkę'},
+    {text:'Sprawdź planer urlopowy', target:'planner', pts:85, energy:3, stress:2, time:14, hint:'Kliknij planer'},
+    {text:'Sprawdź pogodę za oknem', target:'window', pts:70, energy:1, stress:-3, time:15, hint:'Kliknij okno'},
+    {text:'Zniszcz stare pismo', target:'shredder', pts:110, energy:3, stress:2, time:13, hint:'Kliknij niszczarkę'},
+    {text:'Policz kwotę na kalkulatorze', target:'calculator', pts:100, energy:3, stress:3, time:13, hint:'Kliknij kalkulator'},
+    {text:'Znajdź akta klienta', target:'folder', pts:105, energy:4, stress:3, time:14, hint:'Kliknij żółtą teczkę AKTA'},
+    {text:'Włącz lampkę biurkową', target:'lamp', pts:85, energy:1, stress:-1, time:13, hint:'Kliknij lampkę'},
+    {text:'ZŁAP ZŁODZIEJA!', target:'thief', pts:260, energy:1, stress:6, time:6, hint:'Kliknij głowę złodzieja za kratą', special:true}
   ];
 
   const quips = {
@@ -55,12 +62,12 @@
 
   const actionTargetX = {
     bin: -300, docs: -175, phone: -210, planner: -145, stamp: -95, computer: -15, coffee: 85,
-    printer: 145, cabinet: 250, door: 330, clock: 230, window: 35
+    printer: 145, cabinet: 250, door: 330, clock: 230, window: 35, shredder:-280, calculator:70, folder:-260, lamp:170
   };
 
   const SHIFT_REAL_SECONDS = 180;
   const SHIFT_MINUTES = 450;
-  const MAX_QUEUE = 6;
+  const MAX_QUEUE = 3;
 
   let state = {};
   let tickHandle = null;
@@ -77,8 +84,8 @@
     state = {
       running:false, paused:false, score:0, energy:100, stress:10, promile:0, tasks:[], id:0,
       elapsed:0, done:0, failed:0, coffees:0, wc:0, beers:0, vodkas:0, holidays:0, escapings:0,
-      managerDone:0, sylwiaMeet:0, streak:0, bestStreak:0, ended:false, nextTaskAt:2.1,
-      nextEventAt:14, nextSelfAt:11, nextIdleTalkAt:7, lastFrame:0
+      managerDone:0, managerChecks:0, nagany:0, sylwiaMeet:0, thievesCaught:0, thievesMissed:0, streak:0, bestStreak:0, ended:false, nextTaskAt:2.1,
+      nextEventAt:14, nextSelfAt:11, nextIdleTalkAt:7, lastFrame:0, slackingUntil:0, slackingReason:''
     };
   }
 
@@ -112,7 +119,8 @@
       success:[[659,.06],[880,.08],[1046,.08]], fail:[[320,.1],[250,.12]], click:[[550,.05]],
       drink:[[392,.07],[330,.07],[262,.1]], manager:[[784,.08],[523,.12],[784,.06]],
       queue:[[196,.08],[174,.08],[147,.12]], sylwia:[[523,.08],[659,.08]],
-      l4:[[196,.15],[165,.18],[131,.25]], start:[[523,.08],[659,.08],[784,.12]], pause:[[300,.06],[240,.06]]
+      l4:[[196,.15],[165,.18],[131,.25]], start:[[523,.08],[659,.08],[784,.12]], pause:[[300,.06],[240,.06]],
+      thief:[[988,.06],[784,.06],[988,.06],[1175,.12]]
     };
     (map[kind] || []).forEach((n,i)=>playTone(n[0],n[1],'square',0.035,i*0.06));
   }
@@ -152,6 +160,75 @@
   }
 
   function status(text){ ui.statusText.textContent = text; }
+
+  function showScoreDelta(amount, reason=''){
+    if (!ui.scorePop) return;
+    ui.scorePop.classList.remove('hidden','show','negative');
+    void ui.scorePop.offsetWidth;
+    ui.scorePop.textContent = `${amount >= 0 ? '+' : ''}${Math.round(amount)} PKT`;
+    if (amount < 0) ui.scorePop.classList.add('negative');
+    ui.scorePop.classList.add('show');
+    setTimeout(() => ui.scorePop.classList.add('hidden'), 950);
+    if (ui.resultPop && reason) {
+      ui.resultPop.classList.remove('hidden','show');
+      void ui.resultPop.offsetWidth;
+      ui.resultPop.textContent = reason;
+      ui.resultPop.classList.add('show');
+      setTimeout(() => ui.resultPop.classList.add('hidden'), 1350);
+    }
+  }
+
+  function markSlacking(reason, seconds=5){
+    state.slackingReason = reason;
+    state.slackingUntil = Math.max(state.slackingUntil || 0, state.elapsed + seconds);
+  }
+
+  function showThief(){
+    if (!ui.thief) return;
+    ui.thief.classList.remove('hidden');
+    ui.thief.classList.remove('peek');
+    void ui.thief.offsetWidth;
+    ui.thief.classList.add('peek');
+    banner('UWAGA! KTOŚ ZAGLĄDA PRZEZ OKNO!', 1400);
+    playSfx('thief');
+  }
+
+  function hideThief(){
+    if (!ui.thief) return;
+    ui.thief.classList.remove('peek','taskTarget');
+    ui.thief.classList.add('hidden');
+  }
+
+  function catchThief(){
+    if (!state.running || state.paused || state.ended || modalOpen) return;
+    const thiefTask = state.tasks.find(t => t.target === 'thief');
+    if (!thiefTask) return;
+    state.thievesCaught++;
+    const ok = completeTask('thief');
+    if (ok) {
+      hideThief();
+      say(rand(['Mam cię! Złodziej jeden.', 'Halo! Ochrona! Tu jakiś bandyta zagląda!', 'A ty gdzie z tym czarnym paskiem?!']), 2600);
+      banner('ZŁODZIEJ ZŁAPANY!', 1800);
+    }
+  }
+
+  function clearTaskHighlight(){
+    document.querySelectorAll('.gameObject.taskTarget').forEach(el => el.classList.remove('taskTarget'));
+    if (ui.currentTask) ui.currentTask.classList.add('hidden');
+  }
+
+  function highlightCurrentTask(){
+    clearTaskHighlight();
+    if (!state.tasks.length) return;
+    const task = [...state.tasks].sort((a,b) => a.endsAt - b.endsAt)[0];
+    if (task.target === 'thief' && ui.thief && ui.thief.classList.contains('hidden')) showThief();
+    const el = document.querySelector(`[data-target="${task.target}"]`);
+    if (el) el.classList.add('taskTarget');
+    if (ui.currentTask) {
+      ui.currentTask.textContent = `TERAZ: ${task.text} → ${labelForTarget(task.target).toUpperCase()}`;
+      ui.currentTask.classList.remove('hidden');
+    }
+  }
 
   function showModal(title, text, buttons){
     modalOpen = true;
@@ -201,29 +278,49 @@
 
   function renderTasks(){
     ui.tasksList.innerHTML = '';
-    if (!state.tasks.length){
+    const sorted = [...state.tasks].sort((a,b) => a.endsAt - b.endsAt);
+
+    if (!sorted.length){
+      if (ui.activeTaskBox) ui.activeTaskBox.classList.add('waiting');
+      if (ui.activeTaskText) ui.activeTaskText.textContent = 'Czekaj na kolejne polecenie…';
+      if (ui.activeTaskTime) ui.activeTaskTime.textContent = '--';
+      if (ui.activeTaskPoints) ui.activeTaskPoints.textContent = '--';
+      if (ui.activeTaskTimerBar) ui.activeTaskTimerBar.style.width = '0%';
       const div = document.createElement('div');
       div.className = 'taskCard';
-      div.innerHTML = `<div class="taskTop"><span>Spokój… chwilowy.</span><b>0 s</b></div><div class="taskHint">Dżoanna na razie udaje produktywność.</div><div class="timerBar"><i style="width:100%"></i></div>`;
+      div.innerHTML = `<div class="taskTop"><span>Brak zadań</span><b>—</b></div><div class="taskHint">Za chwilę pojawi się następne polecenie.</div>`;
       ui.tasksList.appendChild(div);
+      clearTaskHighlight();
       return;
     }
-    state.tasks.forEach(task => {
+
+    const active = sorted[0];
+    const activeRemain = Math.max(0, active.endsAt - state.elapsed);
+    const activePct = clamp((activeRemain / active.duration) * 100, 0, 100);
+    if (ui.activeTaskBox) ui.activeTaskBox.classList.remove('waiting');
+    if (ui.activeTaskText) ui.activeTaskText.textContent = active.text.toUpperCase();
+    if (ui.activeTaskTime) ui.activeTaskTime.textContent = `${activeRemain.toFixed(1)} s`;
+    if (ui.activeTaskPoints) ui.activeTaskPoints.textContent = `${active.pts} + bonus`;
+    if (ui.activeTaskTimerBar) ui.activeTaskTimerBar.style.width = `${activePct}%`;
+
+    sorted.forEach((task, index) => {
       const card = document.createElement('div');
       const remain = Math.max(0, task.endsAt - state.elapsed);
       const pct = clamp((remain / task.duration) * 100, 0, 100);
       card.className = 'taskCard' + (remain < 3 ? ' urgent' : '');
-      card.innerHTML = `<div class="taskTop"><span>${task.text}</span><b>${remain.toFixed(1)} s</b></div>
-                        <div class="taskHint">${task.hint} • cel: ${labelForTarget(task.target)}</div>
+      const tag = index === 0 ? 'TERAZ' : `#${index+1}`;
+      card.innerHTML = `<div class="taskTop"><span>${tag}: ${task.text}</span><b>${remain.toFixed(1)} s</b></div>
+                        <div class="taskHint">${task.hint} • za zadanie: ${task.pts} pkt</div>
                         <div class="timerBar"><i style="width:${pct}%"></i></div>`;
       ui.tasksList.appendChild(card);
     });
+    highlightCurrentTask();
   }
 
   function labelForTarget(target){
     return {
       printer:'drukarka', computer:'komputer', bin:'kosz', clock:'zegar', docs:'dokumenty', phone:'telefon',
-      cabinet:'szafka', stamp:'pieczątka', planner:'planer', window:'okno'
+      cabinet:'szafka', stamp:'pieczątka', planner:'planer', window:'okno', shredder:'niszczarka', calculator:'kalkulator', folder:'akta', lamp:'lampka', thief:'złodziej za oknem'
     }[target] || target;
   }
 
@@ -242,7 +339,9 @@
       urgent: !!opts.urgent
     };
     state.tasks.push(task);
+    if (task.target === 'thief') showThief();
     renderTasks();
+    banner(`NOWE ZADANIE: ${task.text} • ${duration.toFixed(0)} s • ${task.pts} pkt`, 1800);
     if (state.tasks.length >= 4) say(rand(quips.busy));
     if (state.tasks.length >= MAX_QUEUE) {
       endGame('L4', 'A ja pierdolę nie robię. Biorę L4, bo to jest jakiś cyrk.');
@@ -253,8 +352,15 @@
   }
 
   function spawnRandomTask(){
-    addTask(rand(taskDefs));
-    state.nextTaskAt = state.elapsed + clamp(4.7 - state.elapsed/55, 2.2, 4.7) + Math.random()*1.2;
+    if (state.tasks.length >= MAX_QUEUE) {
+      state.nextTaskAt = state.elapsed + 2.5;
+      return;
+    }
+    const thiefAlready = state.tasks.some(t => t.target === 'thief');
+    const pool = taskDefs.filter(t => t.target !== 'thief');
+    if (!thiefAlready && state.elapsed > 8 && chance(0.14)) addTask(taskDefs.find(t => t.target === 'thief'));
+    else addTask(rand(pool));
+    state.nextTaskAt = state.elapsed + clamp(6.8 - state.elapsed/65, 3.8, 6.8) + Math.random()*1.4;
   }
 
   function moveDzo(target, prop=''){ 
@@ -294,16 +400,20 @@
     const remain = Math.max(0, task.endsAt - state.elapsed);
     const timeBonus = remain > 4 ? 35 : remain > 1.5 ? 15 : 0;
     const streakBonus = state.streak >= 4 ? 20 : 0;
-    state.score += task.pts + timeBonus + streakBonus;
+    const gained = task.pts + timeBonus + streakBonus;
+    state.score += gained;
     state.energy = clamp(state.energy - task.energy, 0, 100);
     state.stress = clamp(state.stress + task.stress - 2, 0, 100);
     state.done++;
     state.streak++;
     state.bestStreak = Math.max(state.bestStreak, state.streak);
+    if (task.target === 'thief') hideThief();
+    if (task.target === 'lamp' && $('lampObj')) { $('lampObj').classList.add('on'); setTimeout(() => $('lampObj').classList.remove('on'), 1800); }
     renderTasks();
     updateHud();
     playSfx('success');
-    status(`Zrobione: ${task.text} (+${task.pts + timeBonus + streakBonus} pkt)`);
+    status(`Zrobione: ${task.text} (+${gained} pkt)`);
+    showScoreDelta(gained, `DOBRZE: ${task.text}`);
     say(rand(quips.success));
     return true;
   }
@@ -317,8 +427,10 @@
       state.stress = clamp(state.stress + 10, 0, 100);
       state.energy = clamp(state.energy - 4, 0, 100);
       state.streak = 0;
-      say(rand(quips.fail));
+      if (task.target === 'thief') { state.thievesMissed++; hideThief(); say('No pięknie. Złodziej uciekł. Jeszcze tego brakowało.', 2600); }
+      else say(rand(quips.fail));
       status(`Nie zdążono: ${task.text} (-120 pkt)`);
+      showScoreDelta(-120, `CZAS MINĄŁ: ${task.text}`);
       playSfx('fail');
       return false;
     });
@@ -326,6 +438,7 @@
   }
 
   function actionCoffee(){
+    markSlacking('pije kawę zamiast pracować', 4.5);
     moveDzo('coffee','☕'); animateObject('coffee'); ui.dzoanna.classList.add('drinking');
     state.coffees++; state.energy = clamp(state.energy + 18, 0, 100); state.stress = clamp(state.stress - 8, 0, 100); state.score = Math.max(0, state.score - 30);
     say('Bez kawy tego nie przeżyję.'); status('Dżoanna pije kawę (-30 pkt, +18 energii)'); playSfx('drink');
@@ -334,13 +447,14 @@
 
   function actionDrink(type){
     const isVodka = type === 'vodka';
+    markSlacking(isVodka ? 'pije wódkę w pracy' : 'pije piwo w pracy', 7);
     moveDzo('cabinet', isVodka ? '🍸' : '🍺'); animateObject('cabinet'); ui.dzoanna.classList.add('drinking');
     if (isVodka) state.vodkas++; else state.beers++;
     state.energy = clamp(state.energy + (isVodka ? 22 : 14), 0, 100);
     state.stress = clamp(state.stress - (isVodka ? 18 : 10), 0, 100);
     state.promile = clamp(state.promile + (isVodka ? 32 : 18), 0, 100);
     state.score = Math.max(0, state.score - (isVodka ? 170 : 110));
-    say(isVodka ? 'Mocny full. Jak ktoś pyta, to to był syrop.' : 'Jedno jeszcze nikogo nie zwolniło.');
+    say(isVodka ? rand(['Mocny full. Jak ktoś pyta, to to był syrop.','Wódka? Jaka wódka? Ja tu tylko dezynfekuję stres.','O matko, ale kopnęło. Potrzebuję lekarza.','Jeszcze kieliszek i zacznę rozumieć te przepisy.']) : rand(['Jedno jeszcze nikogo nie zwolniło.','Piwo to nie alkohol, to płyn motywacyjny.','Mocny Full i od razu urząd mniej straszny.']));
     status(isVodka ? 'Wódka z szafki (-170 pkt, +22 energii, +32 promile)' : 'Piwo z szafki (-110 pkt, +14 energii, +18 promile)');
     if (state.promile > 50) say(rand(quips.drunk), 3000);
     playSfx('drink'); resetPose(1300); updateHud();
@@ -348,6 +462,7 @@
   }
 
   function actionWc(){
+    markSlacking('uciekła do WC', 5.5);
     moveDzo('door','🚽'); animateObject('door'); $('doorObj').classList.add('open');
     state.wc++; state.energy = clamp(state.energy + 10, 0, 100); state.stress = clamp(state.stress - 4, 0, 100); state.score = Math.max(0, state.score - 40); state.elapsed += 2.5;
     say('Idę do WC, bo już naprawdę nie mogę.'); status('Dżoanna wyszła do WC (-40 pkt, +10 energii)'); playSfx('click');
@@ -355,6 +470,7 @@
   }
 
   function actionHolidays(){
+    markSlacking('szuka wakacji w godzinach pracy', 6);
     moveDzo('window','🧳'); animateObject('window');
     state.holidays++; state.stress = clamp(state.stress - 8, 0, 100); state.energy = clamp(state.energy + 4, 0, 100); state.score = Math.max(0, state.score - 60); state.elapsed += 2;
     say('Zaraz weekend. O chyba trzeba wyjechać…');
@@ -394,12 +510,14 @@
   }
 
   function plannerIdle(){
+    markSlacking('kombinuje w planerze zamiast pracować', 4);
     moveDzo('planner','📝'); animateObject('planner'); ui.dzoanna.classList.add('working');
     state.score = Math.max(0, state.score - 20); state.stress = clamp(state.stress - 2, 0, 100);
     say('Może sobie rozplanuję, jak nic nie zrobić jutro.'); status('Dżoanna grzebie w planerze (-20 pkt)'); playSfx('click'); resetPose(); updateHud();
   }
 
   function windowIdle(){
+    markSlacking('gapi się przez okno', 4);
     moveDzo('window','🌴'); animateObject('window');
     say('A może lepiej szukać wakacji niż odpowiedzi na maile?'); status('Dżoanna patrzy za okno.'); playSfx('click'); resetPose();
   }
@@ -408,8 +526,9 @@
     if (!state.running || state.paused || state.ended || modalOpen) return;
     const special = {
       coffee: actionCoffee,
-      cabinet: cabinetModal,
+      cabinet: () => state.tasks.some(t => t.target === 'cabinet') ? doWorkAction('cabinet','📁') : cabinetModal(),
       door: doorModal,
+      thief: catchThief,
       planner: () => completeTask('planner') || plannerIdle(),
       window: () => completeTask('window') || windowIdle(),
       clock: () => doWorkAction('clock','🕒'),
@@ -418,7 +537,11 @@
       docs: () => doWorkAction('docs','📄'),
       phone: () => doWorkAction('phone','☎️'),
       bin: () => doWorkAction('bin','🗑️'),
-      stamp: () => doWorkAction('stamp','🔴')
+      stamp: () => doWorkAction('stamp','🔴'),
+      shredder: () => doWorkAction('shredder','📃'),
+      calculator: () => doWorkAction('calculator','🧮'),
+      folder: () => doWorkAction('folder','📁'),
+      lamp: () => doWorkAction('lamp','💡')
     };
     (special[target] || (() => {}))();
   }
@@ -431,6 +554,7 @@
       state.stress = clamp(state.stress + 1, 0, 100);
       say(rand(quips.idle));
       status(`To nie było teraz potrzebne. (-10 pkt)`);
+      showScoreDelta(-10, 'ZŁY PRZEDMIOT');
       playSfx('click');
     }
     resetPose(); updateHud();
@@ -439,16 +563,38 @@
   function spawnManager(){
     ui.visitor.classList.remove('hidden');
     ui.visitorLabel.textContent = 'KIEROWNICZKA';
-    banner('KIEROWNICZKA: PILNE POLECENIE!');
+    state.managerChecks++;
     playSfx('manager');
-    const base = rand(taskDefs.filter(t => ['printer','computer','docs','clock','stamp','phone'].includes(t.target)));
-    addTask(base, {urgent:true, duration:7, pts:base.pts + 45, text:`PILNE: ${base.text}`, hint:'Kierowniczka patrzy'});
-    say(rand([
-      'Dżoanna! To miało być już zrobione.',
-      'Dżoanna, natychmiast proszę to ogarnąć.',
-      'Dżoanna! Interesant czeka.'
-    ]), 2600);
-    setTimeout(() => ui.visitor.classList.add('hidden'), 3500);
+
+    const caught = (state.slackingUntil || 0) > state.elapsed || state.promile >= 25;
+    if (caught) {
+      state.nagany++;
+      const alcohol = state.promile >= 25;
+      const penalty = alcohol ? 550 : 350;
+      state.score = Math.max(0, state.score - penalty);
+      state.stress = clamp(state.stress + (alcohol ? 28 : 18), 0, 100);
+      banner(`NAGANA! -${penalty} PKT`);
+      say(alcohol
+        ? rand(['Dżoanna! Czy ja czuję alkohol?! NAGANA!', 'Co tu się dzieje?! Proszę natychmiast odłożyć ten kieliszek!', 'Dżoanna, to jest urząd, nie bar. NAGANA!'])
+        : `Dżoanna! Przyłapałam panią: ${state.slackingReason || 'nie pracuje pani'}. NAGANA!`, 3300);
+      status(`Kierowniczka złapała Dżoannę: ${state.slackingReason || 'obijanie się'} (-${penalty} pkt)`);
+      state.slackingUntil = 0;
+      state.slackingReason = '';
+      updateHud();
+    } else {
+      banner('KIEROWNICZKA SPRAWDZA, CZY PRACUJESZ');
+      if (chance(0.55)) {
+        state.managerDone++;
+        state.score += 60;
+        say(rand(['O, widzę że pani pracuje. Tak trzymać.', 'Dobrze Dżoanna, dziś bez uwag.', 'Widzę dokumenty w ruchu. W porządku.']), 2600);
+        status('Kontrola stanowiska: wszystko w porządku (+60 pkt)');
+      } else {
+        const base = rand(taskDefs.filter(t => ['printer','computer','docs','clock','stamp','phone'].includes(t.target)));
+        addTask(base, {urgent:true, duration:7, pts:base.pts + 45, text:`PILNE: ${base.text}`, hint:'Kierowniczka patrzy'});
+        say(rand(['Dżoanna! To proszę zrobić natychmiast.', 'Dżoanna, mam dla pani pilne zadanie.', 'Interesant czeka. Proszę działać.']), 2600);
+      }
+    }
+    setTimeout(() => ui.visitor.classList.add('hidden'), 3800);
   }
 
   function spawnSylwia(){
@@ -462,7 +608,7 @@
       'Robisz coś czy tylko wyglądasz, że robisz?'
     ]), [
       {label:'NIE, PRACUJĘ', kind:'good', onClick:() => { state.score += 40; say('No patrz, jaka profesjonalistka.'); status('Dżoanna została przy biurku (+40 pkt)'); }},
-      {label:'NO DOBRA', kind:'bad', onClick:() => { state.sylwiaMeet++; state.stress = clamp(state.stress - 6, 0, 100); state.energy = clamp(state.energy + 6, 0, 100); state.score = Math.max(0, state.score - 70); state.elapsed += 2.2; say('Tylko na chwilkę…', 2200); status('Ploteczki z Sylwią (-70 pkt)'); }}
+      {label:'NO DOBRA', kind:'bad', onClick:() => { markSlacking('plotkuje z Sylwią', 6); state.sylwiaMeet++; state.stress = clamp(state.stress - 6, 0, 100); state.energy = clamp(state.energy + 6, 0, 100); state.score = Math.max(0, state.score - 70); state.elapsed += 2.2; say('Tylko na chwilkę…', 2200); status('Ploteczki z Sylwią (-70 pkt)'); }}
     ]);
     setTimeout(() => ui.visitor.classList.add('hidden'), 3500);
   }
@@ -579,6 +725,10 @@
       <div>Piwa: <b>${state.beers}</b></div>
       <div>Wódki: <b>${state.vodkas}</b></div>
       <div>Ploty / Sylwia: <b>${state.sylwiaMeet}</b></div>
+      <div>Kontrole kierowniczki: <b>${state.managerChecks}</b></div>
+      <div>Nagany: <b>${state.nagany}</b></div>
+      <div>Złapani złodzieje: <b>${state.thievesCaught}</b></div>
+      <div>Złodzieje, którzy uciekli: <b>${state.thievesMissed}</b></div>
       <div>Szukanie wakacji: <b>${state.holidays}</b></div>
       <div>Najlepsza seria: <b>${state.bestStreak}</b></div>
       <div>Promile na koniec: <b>${Math.round(state.promile)}%</b></div>`;
@@ -595,9 +745,10 @@
     ui.end.classList.remove('show');
     ui.modal.classList.remove('show');
     ui.visitor.classList.add('hidden');
+    hideThief();
     state.running = true;
     state.lastFrame = 0;
-    state.nextTaskAt = 1.8;
+    state.nextTaskAt = 999;
     state.nextEventAt = 15;
     state.nextSelfAt = 11;
     state.nextIdleTalkAt = 6;
@@ -606,7 +757,8 @@
     playSfx('start');
     startMusic();
     say('Dobra. Zaczynamy zmianę. Oby do 15:00.', 2200);
-    status('Zmiana rozpoczęta. Klikaj właściwe elementy i pilnuj Dżoanny.');
+    status('Zmiana rozpoczęta. Pierwsze zadanie już czeka.');
+    spawnRandomTask();
     tickHandle = requestAnimationFrame(gameTick);
   }
 
@@ -640,10 +792,10 @@
     ui.pauseBtn.addEventListener('click', togglePause);
     ui.musicBtn.addEventListener('click', toggleMusic);
     $('helpBtn').addEventListener('click', () => {
-      showModal('Jak grać?', 'Klikaj właściwe przedmioty zgodnie z zadaniami w panelu. Masz też fizyczne przyciski do WC, wakacji i domu. Uważaj na stres, energię i promile.', [{label:'OK'}]);
+      showModal('Jak grać?', 'Klikaj właściwe przedmioty zgodnie z zadaniami w panelu. Gdy złodziej wychyli się zza kraty w oknie, kliknij jego głowę zanim ucieknie. Masz też przyciski do WC, wakacji i domu. Uważaj na stres, energię i promile.', [{label:'OK'}]);
     });
 
-    ['clock','door','cabinet','bin','docs','computer','printer','phone','coffee','stamp','planner','window'].forEach(target => {
+    ['clock','door','cabinet','bin','docs','computer','printer','phone','coffee','stamp','planner','window','shredder','calculator','folder','lamp','thief'].forEach(target => {
       const el = document.querySelector(`[data-target="${target}"]`);
       if (el) el.addEventListener('click', () => objectAction(target));
     });

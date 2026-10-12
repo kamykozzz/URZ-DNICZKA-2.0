@@ -104,3 +104,84 @@ body.drunkPulse #office{filter:saturate(1.02) brightness(1.01)}
 @keyframes wobble{0%,100%{transform:rotate(0)}30%{transform:rotate(.8deg)}70%{transform:rotate(-.8deg)}}
 @media(max-height:690px){.hud{height:66px}.brand span{font-size:20px}.stat strong{font-size:20px}.workspace{grid-template-columns:270px}.dzoanna{transform:translateX(calc(-50% + var(--dzo-x,0px))) scale(.9);transform-origin:bottom}.officeName{font-size:28px}.introCard h1{font-size:34px}.card{padding:18px}}
 @media(orientation:portrait) and (max-width:760px){#rotateHint{display:flex}#gameShell{display:none}}
+.currentTask{position:absolute;left:50%;bottom:4%;transform:translateX(-50%);z-index:20;min-width:320px;max-width:60%;padding:10px 16px;border-radius:12px;border:3px solid #1b1b1b;background:linear-gradient(180deg,#ffd93d,#f2b400);color:#171717;font-size:14px;font-weight:950;text-align:center;box-shadow:0 7px 20px rgba(0,0,0,.45)}
+.gameObject.taskTarget{z-index:22!important;filter:drop-shadow(0 0 4px #fff) drop-shadow(0 0 14px #ffd400);animation:targetPulse .75s ease-in-out infinite alternate}
+.gameObject.taskTarget::after{content:"KLIKNIJ";position:absolute;left:50%;top:-28px;transform:translateX(-50%);background:#ffd400;color:#161616;border:2px solid #191919;border-radius:7px;padding:3px 7px;font-size:9px;font-weight:950;white-space:nowrap;box-shadow:0 3px 8px rgba(0,0,0,.45)}
+@keyframes targetPulse{from{filter:drop-shadow(0 0 3px #fff) drop-shadow(0 0 7px #ffd400);transform:translateY(0) scale(1)}to{filter:drop-shadow(0 0 5px #fff) drop-shadow(0 0 18px #ffd400);transform:translateY(-2px) scale(1.035)}}
+
+/* v0.4 — czytelne zadania i punktacja */
+.tasksPanel{min-width:320px}
+.activeTaskBox{background:linear-gradient(180deg,#303743,#20252d);border:3px solid #ffd23f;border-radius:14px;padding:12px;margin-bottom:10px;box-shadow:0 0 0 2px rgba(255,210,63,.12),0 8px 20px rgba(0,0,0,.3);color:#fff}
+.activeTaskBox.waiting{border-color:#59616d;opacity:.82}
+.activeTaskLabel{font-size:10px;font-weight:950;color:#ffd23f;letter-spacing:1px;margin-bottom:5px}
+.activeTaskText{font-size:18px;font-weight:950;line-height:1.15;color:#fff;min-height:42px;text-shadow:0 2px 2px rgba(0,0,0,.4)}
+.activeTaskMeta{display:flex;justify-content:space-between;gap:8px;margin-top:8px;font-size:12px;font-weight:900;color:#dce2e9}
+.activeTaskMeta b{font-size:14px;color:#fff}
+.activeTaskTimer{height:12px;border-radius:9px;background:#0e1115;border:1px solid #4b5461;overflow:hidden;margin-top:8px}
+.activeTaskTimer i{display:block;height:100%;width:0;background:linear-gradient(90deg,#57da71 0%,#ffd24f 55%,#ff5656 100%);transition:width .08s linear}
+.queueTitle{font-size:10px;color:#aeb5be;margin:2px 0 6px}
+.tasksList{min-height:120px;max-height:170px}
+.taskCard{color:#fff!important;background:#252a33!important}
+.taskTop,.taskTop span,.taskTop b{color:#fff!important}
+.taskHint{color:#cbd1d8!important}
+.taskCard:first-child{border-color:#ffd23f!important;box-shadow:0 0 0 2px rgba(255,210,63,.15),0 4px 10px rgba(0,0,0,.25)}
+.currentTask{bottom:3%;font-size:16px!important;min-width:380px;max-width:68%;animation:currentPulse .85s ease-in-out infinite alternate}
+.gameObject.taskTarget{animation:targetPulse .65s ease-in-out infinite alternate!important;z-index:14!important;outline:5px solid #ffdd32!important;outline-offset:5px!important}
+.gameObject.taskTarget::after{font-size:12px!important;padding:5px 10px!important;top:-36px!important}
+.scorePop{position:fixed;left:50%;top:88px;transform:translateX(-50%);z-index:250;background:#1f9d55;color:#fff;border:4px solid #fff;border-radius:14px;padding:12px 22px;font-size:28px;font-weight:950;box-shadow:0 10px 28px rgba(0,0,0,.5);pointer-events:none}
+.scorePop.negative{background:#ba2d3b}
+.scorePop.show{display:block!important;animation:scorePop .9s ease forwards}
+.resultPop{position:fixed;left:50%;top:145px;transform:translateX(-50%);z-index:249;color:#fff;background:rgba(17,19,23,.95);border:2px solid #616b79;border-radius:10px;padding:8px 14px;font-size:14px;font-weight:900;box-shadow:0 8px 20px rgba(0,0,0,.45);pointer-events:none}
+.resultPop.show{display:block!important;animation:resultPop 1.3s ease forwards}
+.hud .stat:first-of-type{border-color:#ffd23f;box-shadow:0 0 0 2px rgba(255,210,63,.12),0 4px 14px var(--shadow)}
+#score{color:#ffd23f;font-size:30px}
+@keyframes targetPulse{from{filter:brightness(1) drop-shadow(0 0 5px #ffcf27);transform:scale(1)}to{filter:brightness(1.25) drop-shadow(0 0 18px #ffeb72);transform:scale(1.055)}}
+@keyframes currentPulse{from{box-shadow:0 7px 20px rgba(0,0,0,.45)}to{box-shadow:0 7px 26px rgba(255,210,0,.55)}}
+@keyframes scorePop{0%{opacity:0;transform:translate(-50%,12px) scale(.7)}20%{opacity:1;transform:translate(-50%,0) scale(1.08)}70%{opacity:1}100%{opacity:0;transform:translate(-50%,-28px) scale(1)}}
+@keyframes resultPop{0%{opacity:0;transform:translate(-50%,8px)}18%{opacity:1;transform:translate(-50%,0)}75%{opacity:1}100%{opacity:0;transform:translate(-50%,-15px)}}
+@media(max-width:1000px){.workspace{grid-template-columns:330px 1fr}.activeTaskText{font-size:16px}.currentTask{min-width:300px;max-width:72%;font-size:14px!important}}
+
+/* =========================================================
+   v0.5 — nowe przedmioty + złodziej za kratą
+   ========================================================= */
+.window{position:absolute;left:39%;top:11%;width:20%;height:23%;background:#b66f40;border:8px solid #704321;border-radius:8px;overflow:hidden;box-shadow:0 6px 12px var(--shadow);z-index:3}
+.window .sky{position:absolute;inset:0;background:linear-gradient(#87d0ff,#cfefff 72%,#b6ecff);z-index:1}
+.windowClick{inset:0;width:100%;height:100%;z-index:2;background:transparent;border:0;cursor:pointer}
+.windowClick span{position:absolute;right:6px;top:6px;background:rgba(255,255,255,.88);color:#31536f;border:2px solid #31536f;border-radius:6px;padding:3px 5px;font-size:8px;font-weight:950}
+.window .cloud{z-index:1}
+.window .frameV,.window .frameH{z-index:6;pointer-events:none}
+.windowLabel{z-index:8;pointer-events:none}
+.windowBars{position:absolute;inset:0;z-index:7;pointer-events:none}
+.windowBars i{position:absolute;top:-8%;bottom:-8%;width:7px;background:linear-gradient(90deg,#2b2b2b,#606060,#1c1c1c);border:1px solid #111;box-shadow:1px 0 2px rgba(0,0,0,.55)}
+.windowBars i:nth-child(1){left:16%}.windowBars i:nth-child(2){left:38%}.windowBars i:nth-child(3){left:61%}.windowBars i:nth-child(4){left:83%}
+
+.thief{left:50%;bottom:-14px;width:82px;height:100px;transform:translateX(-50%) translateY(95px);z-index:5;cursor:pointer;transition:none}
+.thief.peek{animation:thiefPeek .55s ease-out forwards}
+.thief .thiefFace{position:absolute;left:12px;top:20px;width:58px;height:64px;background:#d2a17e;border:3px solid #2c2220;border-radius:46% 46% 42% 42%;box-shadow:0 3px 8px rgba(0,0,0,.4)}
+.thiefHair{position:absolute;left:10px;top:9px;width:62px;height:30px;background:#28231f;border-radius:55% 55% 25% 25%;z-index:2}
+.thiefMask{position:absolute;left:5px;right:5px;top:21px;height:18px;background:#111;border-radius:12px;z-index:3}
+.thiefEye{position:absolute;top:27px;width:7px;height:5px;background:#f3f3f3;border-radius:50%;z-index:4}.thiefEye.e1{left:15px}.thiefEye.e2{right:15px}
+.thiefMouth{position:absolute;left:20px;top:47px;width:17px;height:7px;border-bottom:3px solid #6c3934;border-radius:50%}
+.thief b{position:absolute;left:50%;bottom:0;transform:translateX(-50%);background:#101010;color:#ffdd39;border:2px solid #ffdd39;border-radius:6px;padding:2px 5px;font-size:8px;white-space:nowrap}
+.thief.taskTarget{outline:5px solid #ff3131!important;filter:drop-shadow(0 0 14px #ff3333)!important;animation:thiefPeek .55s ease-out forwards, thiefDanger .48s ease-in-out .55s infinite alternate!important}
+.thief.taskTarget::after{content:"ŁAP!"!important;top:2px!important;left:50%!important;background:#e32222!important;color:#fff!important;border-color:#fff!important;font-size:10px!important;padding:3px 7px!important;z-index:10}
+@keyframes thiefPeek{from{transform:translateX(-50%) translateY(95px)}to{transform:translateX(-50%) translateY(0)}}
+@keyframes thiefHide{from{transform:translateX(-50%) translateY(0)}to{transform:translateX(-50%) translateY(95px)}}
+@keyframes thiefDanger{from{filter:drop-shadow(0 0 8px #ff3333)}to{filter:drop-shadow(0 0 20px #ff0000) brightness(1.15)}}
+
+.shredder{left:9%;bottom:6%;width:92px;height:116px;background:linear-gradient(#4f5963,#30363e);border:5px solid #23272d;border-radius:8px;color:#fff;box-shadow:0 5px 10px var(--shadow);z-index:6}
+.shredder:before{content:"";position:absolute;left:12px;right:12px;top:18px;height:8px;background:#0f1114;border-radius:4px;box-shadow:0 16px 0 #242a31}
+.shredder .shredPaper{position:absolute;left:50%;top:-18px;transform:translateX(-50%);width:42px;height:35px;background:#fff;color:#888;border:1px solid #aaa;font-size:24px;line-height:32px}
+.shredder b{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);font-size:9px;white-space:nowrap}
+.folderObj{left:4%;top:39%;width:88px;height:68px;background:linear-gradient(#f3be3d,#d99b18);border:4px solid #7d5612;border-radius:6px;color:#2d2315;box-shadow:0 4px 9px var(--shadow);z-index:4}
+.folderObj span{font-size:27px;display:block}.folderObj b{font-size:9px;display:block;margin-top:-3px}
+.calculatorObj{left:63%;top:12%;width:64px;height:78px;background:linear-gradient(#383f48,#22272e);border:4px solid #15181c;border-radius:7px;color:#fff;box-shadow:0 4px 8px var(--shadow)}
+.calculatorObj span{display:block;font-family:monospace;font-size:9px;line-height:14px;background:#7f9e7f;color:#172217;margin:5px 7px 3px;padding:2px;border-radius:3px}.calculatorObj b{font-size:7px}
+.lampObj{right:20%;top:-61%;width:88px;height:104px;color:#222}
+.lampShade{position:absolute;left:20px;top:6px;width:50px;height:33px;background:#f2cb52;border:4px solid #5f4b1f;border-radius:50% 50% 12% 12%;transform:rotate(-12deg)}
+.lampStem{position:absolute;left:45px;top:37px;width:7px;height:50px;background:#484848;transform:rotate(13deg);transform-origin:top}.lampStem:after{content:"";position:absolute;left:-18px;bottom:-8px;width:45px;height:9px;background:#444;border-radius:50%}
+.lampObj b{position:absolute;left:50%;bottom:0;transform:translateX(-50%);background:#f2cb52;border:2px solid #4c3e1f;border-radius:5px;padding:2px 4px;font-size:8px}
+.lampObj.on .lampShade{filter:drop-shadow(0 0 10px #fff3a6) brightness(1.2)}
+
+/* Większe pola kliknięcia nowych elementów na telefonie */
+.shredder,.folderObj,.calculatorObj,.lampObj,.thief{touch-action:manipulation}

@@ -24,7 +24,14 @@
 
     <section class="workspace">
       <aside class="tasksPanel">
-        <div class="panelTitle">DO ZROBIENIA <span id="queueCount">0/6</span></div>
+        <div class="panelTitle">DO ZROBIENIA <span id="queueCount">0/3</span></div>
+        <div id="activeTaskBox" class="activeTaskBox waiting">
+          <div class="activeTaskLabel">AKTUALNE ZADANIE</div>
+          <div id="activeTaskText" class="activeTaskText">Czekaj na polecenie…</div>
+          <div class="activeTaskMeta"><span>CZAS: <b id="activeTaskTime">--</b></span><span>PUNKTY: <b id="activeTaskPoints">--</b></span></div>
+          <div class="activeTaskTimer"><i id="activeTaskTimerBar"></i></div>
+        </div>
+        <div class="panelTitle queueTitle">KOLEJKA</div>
         <div id="tasksList" class="tasksList"></div>
         <div class="panelTitle smallTitle">AKCJE DŻOANNY</div>
         <div class="actionButtons">
@@ -43,11 +50,19 @@
 
         <div id="speech" class="speech hidden"></div>
         <div id="eventBanner" class="eventBanner hidden"></div>
+        <div id="currentTask" class="currentTask hidden"></div>
 
-        <button id="windowObj" class="gameObject window" data-target="window" aria-label="Okno">
-          <div class="sky"></div><div class="cloud c1"></div><div class="cloud c2"></div><div class="frameV"></div><div class="frameH"></div>
-          <div class="windowLabel">WAKACJE?</div>
-        </button>
+        <div class="window" aria-label="Okno z kratą">
+          <div class="sky"></div><div class="cloud c1"></div><div class="cloud c2"></div>
+          <button id="thiefObj" class="gameObject thief hidden" data-target="thief" aria-label="Złodziej">
+            <span class="thiefHair"></span><span class="thiefFace"><i class="thiefMask"></i><i class="thiefEye e1"></i><i class="thiefEye e2"></i><i class="thiefMouth"></i></span>
+            <b>ZŁODZIEJ</b>
+          </button>
+          <button id="windowObj" class="gameObject windowClick" data-target="window" aria-label="Okno"><span>OKNO</span></button>
+          <div class="windowBars" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+          <div class="frameV"></div><div class="frameH"></div>
+          <div class="windowLabel">OKNO Z KRATĄ</div>
+        </div>
 
         <button id="doorObj" class="gameObject door" data-target="door" aria-label="Drzwi">
           <span class="doorSign">KORYTARZ</span><span class="handle"></span>
@@ -58,6 +73,8 @@
         </button>
 
         <button id="binObj" class="gameObject bin" data-target="bin" aria-label="Kosz"><span>🗑</span></button>
+        <button id="shredderObj" class="gameObject shredder" data-target="shredder" aria-label="Niszczarka"><span class="shredPaper">▥</span><b>NISZCZARKA</b></button>
+        <button id="folderObj" class="gameObject folderObj" data-target="folder" aria-label="Akta klienta"><span>📁</span><b>AKTA</b></button>
 
         <div class="desk">
           <button id="docsObj" class="gameObject docs" data-target="docs" aria-label="Dokumenty"><span>WNIOSEK</span><span>DECYZJA</span><span>PISMO</span></button>
@@ -67,6 +84,8 @@
           <button id="coffeeObj" class="gameObject coffee" data-target="coffee" aria-label="Kawa"><span>☕</span><small>KAWA</small></button>
           <button id="stampObj" class="gameObject stamp" data-target="stamp" aria-label="Pieczątka">PIECZĄTKA</button>
           <button id="plannerObj" class="gameObject planner" data-target="planner" aria-label="Kalendarz">PLANER</button>
+          <button id="calculatorObj" class="gameObject calculatorObj" data-target="calculator" aria-label="Kalkulator"><span>7 8 9<br>4 5 6<br>1 2 3</span><b>KALKULATOR</b></button>
+          <button id="lampObj" class="gameObject lampObj" data-target="lamp" aria-label="Lampka biurkowa"><span class="lampShade"></span><span class="lampStem"></span><b>LAMPKA</b></button>
         </div>
 
         <div id="dzoanna" class="dzoanna" aria-label="Dżoanna">
@@ -83,6 +102,9 @@
       </section>
     </section>
 
+    <div id="scorePop" class="scorePop hidden">+100 PKT</div>
+    <div id="resultPop" class="resultPop hidden"></div>
+
     <footer class="bottomBar">
       <div id="statusText">Gotowa do pracy… mniej więcej.</div>
       <button id="helpBtn">?</button>
@@ -95,7 +117,7 @@
       <h1>URZĘDNICZKA 2.0</h1>
       <h2>Dżoanna kontra system</h2>
       <p>Przetrwaj zmianę od 7:30 do 15:00. Rób zadania, pilnuj energii i nie pozwól, żeby Dżoanna odpłynęła na wakacje, do WC, do domu albo do szafki po mocniejszą regenerację.</p>
-      <div class="rules"><span>✓ zadania = punkty</span><span>☕ kawa = energia, ale minus punkty</span><span>🍺 / 🍸 szafka = regeneracja i chaos</span><span>⚠ 6 zadań w kolejce albo za duże zmęczenie = L4</span></div>
+      <div class="rules"><span>✓ zadania = punkty</span><span>☕ kawa = energia, ale minus punkty</span><span>🍺 / 🍸 szafka = regeneracja i chaos</span><span>⚠ pilnuj kolejki, czasu i niespodziewanych akcji</span></div>
       <button id="startBtn" class="primary">ROZPOCZNIJ ZMIANĘ</button>
       <div class="record">Rekord: <b id="recordStart">0</b> pkt</div>
     </div>
